@@ -1,3 +1,6 @@
+#!/usr/bin/python3
+
+#use python 3.x
 #simple shutdown timer script for windows
 
 
