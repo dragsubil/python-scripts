@@ -20,8 +20,9 @@ def fileParse(link_file):
 		pageSave(link1)                            #passes link to pageSave function
 
 		
+#NOTE: VERY IMPORTANT: change how the file name is obtained. maybe extract the name along with the link in the linkExtract function
 def pageSave(page_link):
-	file_name="pages/file{}.html".format(fileno)              #starter filename to iterate through with the fileno global variable
+	file_name="pages/file{}.html".format(fileno)              
 	with urllib.request.urlopen(page_link) as page_object:
 		with open(file_name,'ab+') as file1:
 			file1.write(page_object.read())
