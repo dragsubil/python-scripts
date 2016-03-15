@@ -4,7 +4,12 @@ import urllib.request
 
 #function to extract link and name from the line
 
-prev_name_name=''        
+prev_file_name=''  
+
+namedict={}
+
+namelist=[]
+      
 
 def linkExtract(file_line):
 
@@ -21,14 +26,14 @@ def linkExtract(file_line):
 			''', re.VERBOSE)        
 			
 	try:
-		link_and_name_tup=pattern1.search(file_line).groups()   #groups forms a tuple containing the elements obtained in the parantheses of the regex
+		link_and_file_tup=pattern1.search(file_line).groups()   #groups forms a tuple containing the elements obtained in the parantheses of the regex
 		
 	except AttributeError:										#in case of a line with none of the properties in regex, None is obtained in pattern.search
 		return													#this raises AttributeError, so we must got to the next line, hence return a None
 		
-	#print(link_and_name_tup)
-	link1=link_and_name_tup[0]
-	name1=link_and_name_tup[2]									#name is actually the third element, second being a potential inbetween tag
+	#print(link_and_file_tup)
+	link1=link_and_file_tup[0]
+	name1=link_and_file_tup[2]									#name is actually the third element, second being a potential inbetween tag
 	link1=link1[1:-1]						   				 	#removes the unwanted quotes from the ends of the link we got 
 	return (link1,name1)
 	
@@ -45,13 +50,13 @@ def fileParse(link_file):
 		#print(link1,name1)
 		pageSave(link1,name1)                            	    #passes link and name to pageSave function
 
-		
+'''		
 def linkReplace(new_file_name):									#to find and replace hyperlinks at the "previous chapter" and "next chapter" positions
-	if prev_name_name=='':										#seperate linkReplace and linkReplaceProper for readability
-		prev_name_name=new_file_name
+	if prev_file_name=='':										#seperate linkReplace and linkReplaceProper for readability
+		prev_file_name=new_file_name
 	else:
-		linkReplaceProper(prev_name_name,new_file_name)
-		prev_name_name=new_file_name
+		linkReplaceProper(prev_file_name,new_file_name)
+		prev_file_name=new_file_name
 		
 		
 def linkReplaceProper(prev_name,next_name):
@@ -65,7 +70,21 @@ def linkReplaceProper(prev_name,next_name):
 def linkReplaceRegex(file_obj,file_name):
 	for i in file_obj:
 		
+'''		
 	
+def addToDict(file_name):
+	listlen=len(namelist)
+	if listlen==0:
+		namedict[file_name]=['','']
+		namelist.append(file_name)
+		return
+	else:
+		prev_in_list=namelist[listlen-1]
+		namedict[prev_in_list][1]=file_name
+		namedict[file_name]=[prev_in_list,'']
+		namelist.append(file_name)
+		
+
 	
 	
 	
@@ -78,16 +97,19 @@ def pageSave(page_link,page_name):
 	with urllib.request.urlopen(page_link) as page_object:
 		with open(file_name,'wb+') as file1:
 			file1.write(page_object.read())
-			print('Downloaded: {}.html'.format(page_name))
-	linkReplace(file_name)
+			print('Downloaded: {}'.format(file_name))
+			addToDict(file_name)
+			
+
 			
 			
 
 #combined unit test
 
-with open('table.html','r+') as file1:
+with open('tablesample.html','r+') as file1:
 	fileParse(file1)
-
+	print(namedict)
+	print(namelist)
 
 
 

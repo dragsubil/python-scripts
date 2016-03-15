@@ -1,9 +1,4 @@
-* get the pages downloaded to link to the next chapter stored in the computer. replace the hrefs to point locally
+* iterate through the 'namelist' index to open the files one by one
+*use corresponding dict values to replace links at previous chapter and nextchapter
 
-*Get the table of contents to point locally* get the pages downloaded to link to the next chapter stored in the computer. replace the hrefs to point locally
-
-*Get the table of contents to point locally* get the pages balls to link to the next chapter stored in the computer. replace the hrefs to point locally
-
-*Get the table of contents to point locally* get the pages balls to link to the next chapter stored in the computer. replace the hrefs to point locally
-
-*Get the table of contents to point locally
+NOTE: we are able to iterate through the namedict itself. we might not need the namelist
