@@ -4,12 +4,12 @@ import urllib.request
 
 #function to extract link and name from the line
 
-prev_file_name=''  
+prev_file_path=''  
 
-namedict={}
-
-namelist=[]
-      
+namedict={'temp_files/18.z (Donation Interlude #4; Faultline).html': ['temp_files/18.8.html', ''], 'temp_files/18.8.html': ['', 'temp_files/18.z (Donation Interlude #4; Faultline).html']}
+#namedict={}
+namelist=['temp_files/18.8.html', 'temp_files/18.z (Donation Interlude #4; Faultline).html', 'temp_files/18.z (Interlude; Echidna).html']
+#namelist=[]      
 
 def linkExtract(file_line):
 
@@ -50,15 +50,36 @@ def fileParse(link_file):
 		#print(link1,name1)
 		pageSave(link1,name1)                            	    #passes link and name to pageSave function
 
-'''		
-def linkReplace(new_file_name):									#to find and replace hyperlinks at the "previous chapter" and "next chapter" positions
-	if prev_file_name=='':										#seperate linkReplace and linkReplaceProper for readability
-		prev_file_name=new_file_name
-	else:
-		linkReplaceProper(prev_file_name,new_file_name)
-		prev_file_name=new_file_name
+
+def linkReplace():									#to find and replace hyperlinks at the "previous chapter" and "next chapter" positions
+	for file_path in namelist:
+		with open(file_path,'r+',encoding='utf-8') as tmpfile1:
+			file_name=(file_path.split('/'))[1]
+			print(file_name)
+			findAndReplace(tmpfile1,file_path,file_name)
 		
-		
+def findAndReplace(tmp_file,dict_key,file_name):
+	nextchapfind=re.compile(r'href=.*?>(<\D>)?Next\sChapter<')
+	nextfilename=((namedict[dict_key][1]).split('/'))[1]
+	print(nextfilename)
+
+
+	new_file_path='pages/{}'.format(file_name)
+	
+	with open(new_file_path,'w+',encoding='utf-8') as new_file:
+		for line in tmp_file:
+			chkline1=nextchapfind.search(line)
+			if chkline1:
+				
+				a=nextchapfind.sub('href={}>Next Chapter<'.format(nextfilename),line)
+				print(a)
+				new_file.write(a)
+			else:
+				new_file.write(line)
+	
+	
+
+'''	
 def linkReplaceProper(prev_name,next_name):
 	with open(prev_name,'a+') as file1:
 		file1.seek(0)
@@ -67,22 +88,21 @@ def linkReplaceProper(prev_name,next_name):
 		file2.seek(0)
 		linkReplaceRegex(file2,prev_name)
 		
-def linkReplaceRegex(file_obj,file_name):
+def linkReplaceRegex(file_obj,file_path):
 	for i in file_obj:
-		
 '''		
 	
-def addToDict(file_name):
+def addToDict(file_path):
 	listlen=len(namelist)
 	if listlen==0:
-		namedict[file_name]=['','']
-		namelist.append(file_name)
+		namedict[file_path]=['','']
+		namelist.append(file_path)
 		return
 	else:
 		prev_in_list=namelist[listlen-1]
-		namedict[prev_in_list][1]=file_name
-		namedict[file_name]=[prev_in_list,'']
-		namelist.append(file_name)
+		namedict[prev_in_list][1]=file_path
+		namedict[file_path]=[prev_in_list,'']
+		namelist.append(file_path)
 		
 
 	
@@ -93,23 +113,23 @@ def addToDict(file_name):
 	
 #function to save the page with the extracted name, given by the extracted link 
 def pageSave(page_link,page_name):
-	file_name="pages/{}.html".format(page_name)              
+	file_path="temp_files/{}.html".format(page_name)              
 	with urllib.request.urlopen(page_link) as page_object:
-		with open(file_name,'wb+') as file1:
+		with open(file_path,'wb+') as file1:
 			file1.write(page_object.read())
-			print('Downloaded: {}'.format(file_name))
-			addToDict(file_name)
-			
+			print('Downloaded: {}'.format(page_name))
+			addToDict(file_path)
+			print(namelist)
+		
 
 			
 			
 
 #combined unit test
-
+'''
 with open('tablesample.html','r+') as file1:
 	fileParse(file1)
-	print(namedict)
-	print(namelist)
+'''	
 
 
 
@@ -117,8 +137,8 @@ with open('tablesample.html','r+') as file1:
 
 
 
-
-
+#linkReplace unit test
+linkReplace()
 
 
 	
