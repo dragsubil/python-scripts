@@ -42,8 +42,8 @@ def linkExtract(file_line):
 def fileParse(link_file):
 	for i in link_file:	
 		try:													#because of the possibility of an AttributeError from linkExtract, we get a None returned 
-			link1,name1=linkExtract(i)							#this leads to a TypeError, which we try-exceptionise and go to next iteration
-			
+			link1,name1=linkExtract(i)							#this leads to a TypeError, which we try-exceptionise and go to next iteration i.e. search the next line 
+			                                                    #of the html file
 		except TypeError:									
 			continue
 			
@@ -59,17 +59,20 @@ def linkReplace():									#to find and replace hyperlinks at the "previous chap
 			findAndReplace(tmpfile1,file_path,file_name)
 		
 def findAndReplace(tmp_file,dict_key,file_name):
+
+	prevchapfind=re.compile(r'href=.*?>(<\D>)?Previous\sChapter<')
 	nextchapfind=re.compile(r'href=.*?>(<\D>)?Next\sChapter<')
-	nextfilename=((namedict[dict_key][1]).split('/'))[1]
-	print(nextfilename)
+	prevfilename=((namedict[dict_key][0]).split('/'))[1]     #namedict[dict_key][1] contains the previous chapter path "temp_files/xxx.html". we seperate the folder and filename and store the filename 
+	nextfilename=((namedict[dict_key][1]).split('/'))[1]     #namedict[dict_key][1] contains the next chapter path "temp_files/xxx.html". we seperate the folder and filename and store the filename 
+
 
 
 	new_file_path='pages/{}'.format(file_name)
 	
 	with open(new_file_path,'w+',encoding='utf-8') as new_file:
 		for line in tmp_file:
-			chkline1=nextchapfind.search(line)
-			if chkline1:
+			chklinenext=nextchapfind.search(line)
+			if chklinenext:
 				
 				a=nextchapfind.sub('href={}>Next Chapter<'.format(nextfilename),line)
 				print(a)
