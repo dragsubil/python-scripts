@@ -2,7 +2,7 @@
 
 import re  				#for regular expressions
 import urllib.request   #for page downloading facility
-import os				#for deleting the temp files
+import os				#for deleting the temp files and creating the directories
 
 
 
@@ -21,7 +21,7 @@ def linkExtract(file_line):
 			
 			(.*?)>					#obtaining the link from the line. '>' at the end specifies end of tag
 			
-			(<\D*>)?				#accounts for any extra tag that might appear inbetween link and title
+			(<\D*?>)?				#accounts for any extra tag that might appear inbetween link and title
 			
 			(.*?)<					#obtaining the name of the link present in the same line
 			
@@ -29,6 +29,7 @@ def linkExtract(file_line):
 			
 	try:
 		link_and_file_tup=pattern1.search(file_line).groups()   #groups forms a tuple containing the elements obtained in the parantheses of the regex
+		print(link_and_file_tup)
 
 	except AttributeError:										#in case of a line with none of the properties in regex, None is obtained in pattern.search
 		return													#this raises AttributeError, so we must got to the next line, hence return a None
@@ -68,6 +69,8 @@ def charRemoval(name1):
 		name1=name1.replace(" ","")							#removing some chars because because I'm using the name1(the chapter title) to create the local file link. links do other stuff with those chars that mess with the file link
 		name1=name1.replace("#","")
 		name1=name1.replace(";","")
+		name1=name1.replace(":","")
+		name1=name1.replace(",","")
 		return name1
 			
 def tableOfContentsReplace(page_name,line):
@@ -121,17 +124,23 @@ def findAndReplace(tmp_file,dict_key,file_name):
 			chklinenext=nextchapfind.search(line)
 			chklineprev=prevchapfind.search(line)
 			chklinebody=bodyfind.search(line)
-			if chklinenext and chklineprev:
-				
+
+			if chklinenext and chklineprev:	
 				a='<p><a href={}>Last Chapter</a>                    <a href={}>Next Chapter</a></p>'.format(prevfilename,nextfilename)
-				new_file.write(a)
+
+			elif chklinenext:
+				a='<p> <a href={}>Next Chapter</a></p>'.format(nextfilename)
+
+			elif chklineprev:
+				a='<p> <a href={}>Last Chapter</a></p>'.format(prevfilename)
 
 			elif chklinebody:
+				a=line+'<font face="Calibri">'			#appends the font tag to the body tag to change the font in basic html
 
-				a=bodyfind.sub('<body bgcolor="black"><font color="white" face="Calibri">',line)
-				new_file.write(a)
 			else:
-				new_file.write(line)
+				a=line
+
+			new_file.write(a)
 	
 	
 
@@ -178,9 +187,21 @@ def delOldTOC():
 		pass
 
 
+#creates the folder tenp_files, to hold initially downloaded pages, and the folder pages, to hold the pages with links changed to local
+def createFolders():
+	if not os.path.exists("pages"):
+		os.makedirs("pages")
+	if not os.path.exists("temp_files"):
+		os.makedirs("temp_files")
 
-#combined unit test
 
+
+
+
+
+
+#Execution starts here
+createFolders()
 delOldTOC()
 
 tableofcontents=str(input("please enter name of table of contents file: "))
@@ -190,6 +211,8 @@ with open(tableofcontents,'r+') as file1:
 print("Please wait. Changing links to local links")
 linkReplace()
 print("\n\nDone")
+
+
 
 
 
