@@ -29,7 +29,7 @@ def linkExtract(file_line):
 			
 	try:
 		link_and_file_tup=pattern1.search(file_line).groups()   #groups forms a tuple containing the elements obtained in the parantheses of the regex
-		print(link_and_file_tup)
+
 
 	except AttributeError:										#in case of a line with none of the properties in regex, None is obtained in pattern.search
 		return													#this raises AttributeError, so we must got to the next line, hence return a None
@@ -205,7 +205,7 @@ createFolders()
 delOldTOC()
 
 tableofcontents=str(input("please enter name of table of contents file: "))
-with open(tableofcontents,'r+') as file1:
+with open(tableofcontents,'r+',encoding='utf-8') as file1:
 	fileParse(file1)
 
 print("Please wait. Changing links to local links")
