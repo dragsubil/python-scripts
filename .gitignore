@@ -1,4 +1,5 @@
-*.html
+pages
+temp_files
 
 
 todo.txt
