@@ -1,11 +1,1 @@
-* iterate through the 'namelist' index to open the files one by one
-*use corresponding dict values to replace links at previous chapter and nextchapter
-
-NOTE: we are able to iterate through the namedict itself. we might not need the namelist
-
-* add font tag <font color="white" face="Calibri"> some where after body tag
-
-*add <body bgcolor="black">
-
-*remove the white space from the file names as they are saved in temp_files and written in to dict
-
+*object orient it. put classes and stuff.

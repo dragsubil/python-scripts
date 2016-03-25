@@ -6,16 +6,16 @@ import os				#for deleting the temp files and creating the directories
 
 
 
-  
+namelist=[]  #holds the list of file links as a list of 'temp_files/xxx.html' which are used when link replacement is done. These file names are obtained from the original table of contents file.
 
-namedict={}
+namedict={}  #holds the file links as 'temp_files/xxx.html' along with the corresponding prev chapter and next chapter file links whose names are obtained from the original table of contents file
 
-namelist=[]      
+   
 
 #function to extract link and name from the line
 def linkExtract(file_line):
 
-	pattern1=re.compile(r'''		#regex patteren to seperate link, any tag inbetween link and name, and name
+	pattern1=re.compile(r'''		#regex patteren to seperate link, any tag inbetween link and name, and name from original table of contents file
 	
 			href=					#start from the place where href is to get link
 			
@@ -32,7 +32,7 @@ def linkExtract(file_line):
 
 
 	except AttributeError:										#in case of a line with none of the properties in regex, None is obtained in pattern.search
-		return													#this raises AttributeError, so we must got to the next line, hence return a None
+		return													#this raises AttributeError, so we must got to the next line in file, hence return a None
 		
 
 	link1=link_and_file_tup[0]
@@ -47,15 +47,15 @@ def linkExtract(file_line):
 
 
 	
-#function to parse each line in the html file and call the linkExtract()
+#function to parse each line in the original table of contents html file and call the linkExtract()
 
 def fileParse(link_file):
 
 	for i in link_file:	
 		try:													#because of the possibility of an AttributeError from linkExtract, we get a None returned 
 			link1,name1=linkExtract(i)							#this leads to a TypeError, which we try-exceptionise and go to next iteration i.e. search the next line of the html file
-			name1=charRemoval(name1)
-			tableOfContentsReplace(name1,i)
+			name1=charRemoval(name1)							#removes chars from the name that done play well in a URL
+			tableOfContentsReplace(name1,i)						#
 		except TypeError:
 			tableOfContentsReplace(None,i)									
 			continue
@@ -72,7 +72,9 @@ def charRemoval(name1):
 		name1=name1.replace(":","")
 		name1=name1.replace(",","")
 		return name1
-			
+
+
+#creates a new table of contents file in pages dir. replaces each link in the original table of contents file with local file links			
 def tableOfContentsReplace(page_name,line):
 	with open('pages/tableofcontents.html','a+',encoding='utf-8') as file1:
 		if page_name!=None:
@@ -85,14 +87,13 @@ def tableOfContentsReplace(page_name,line):
 
 
 
-
-def linkReplace():											#to find and replace hyperlinks at the "previous chapter" and "next chapter" positions
+#to find and replace hyperlinks at the "previous chapter" and "next chapter" positions
+def linkReplace():											
 	for file_path in namelist:
 		with open(file_path,'r+',encoding='utf-8') as tmpfile1:
 			file_name=(file_path.split('/'))[1]
-			#print(file_name)
 			findAndReplace(tmpfile1,file_path,file_name)
-		os.remove(file_path)								#deletes the file in temp_files after creating a new file with changed links in pages dir
+		os.remove(file_path)								#deletes the corresponding file from temp_files after creating a new file with changed links in pages dir
 
 
 
@@ -193,7 +194,6 @@ def createFolders():
 		os.makedirs("pages")
 	if not os.path.exists("temp_files"):
 		os.makedirs("temp_files")
-
 
 
 
