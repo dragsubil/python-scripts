@@ -1,5 +1,17 @@
 #!usr/bin/env python3
 
+
+#PageSaver for Worm
+#Made to download chapters from the web serial "Worm" (see more at https://parahumans.wordpress.com/)
+#The table.html file contains links to all chapters, copied from the Worm Table of Contents page. sampletable.html cotains chapter links for only the first arc.
+#Cannot be used for other such web serials unless they a Table of Contents page identical to Worm's.
+#Licensed under GNU GPL v3. (C) 2016 dragsubil (www.github.com/dragsubil)
+#Requires python 3.x
+#Support Worm by reading directly from https://parahumans.wordpress.com/
+
+
+
+
 import re  				#for regular expressions
 import urllib.request   #for page downloading facility
 import os				#for deleting the temp files and creating the directories
