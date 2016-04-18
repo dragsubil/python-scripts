@@ -1,5 +1,5 @@
 #PageSaver for the Worm Web Serial (parahumans.wordpress.com)
-<img src=https://parahumans.files.wordpress.com/2011/06/cityscape2.jpg>Worm</img>
+<img src=https://parahumans.files.wordpress.com/2011/06/cityscape2.jpg></img>
 
 
 Will download all the chapters as web pages using the included table.html file and save it locally in directory 'pages'.
