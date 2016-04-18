@@ -15,7 +15,7 @@ Only requires python 3.x. No other dependencies.
 **Go and support the original author [Wildbow](https://www.patreon.com/Wildbow?ty=h). Go read [Worm](https://parahumans.wordpress.com/) online 
 and his other works [Pact](https://pactwebserial.wordpress.com/) and [Twig](https://twigserial.wordpress.com/)**
 
-This scraper (crawler? saver?) is not endorsed by the original author in anyway.
+This scraper (crawler? saver?) is **not endorsed** by the original author in anyway.
 
 
 
