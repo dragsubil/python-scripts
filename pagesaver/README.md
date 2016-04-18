@@ -7,10 +7,16 @@ Will also change the hyperlinks at the "Last Chapter" and "Next Chapter" in each
 
 Also creates a new tableofcontents.html with local links to all the chapters downloaded in the directory 'pages'.
 
+This will also work for other web serials which have a similar table of contents page as Worm has.
 
-The above will happen. Probably. Maybe. I don't know. You might get porn instead. I make no guarantees.
+Only requires python 3.x. No other dependencies.
 
-Requires python 3.x
+**Go and support the original author [Wildbow](https://www.patreon.com/Wildbow?ty=h). Go read [Worm](https://parahumans.wordpress.com/) online 
+and his other works [Pact](https://pactwebserial.wordpress.com/) and [Twig](https://twigserial.wordpress.com/)**
+
+This scraper (crawler? saver?) is not endorsed by the original author in anyway.
+
+
 
 To run the program:
 
