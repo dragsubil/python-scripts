@@ -22,6 +22,124 @@ namelist=[]  #holds the list of file links as a list of 'temp_files/xxx.html' wh
 
 namedict={}  #holds the file links as 'temp_files/xxx.html' along with the corresponding prev chapter and next chapter file links whose names are obtained from the original table of contents file
 
+
+
+
+		
+def findAndReplace(tmp_file,dict_key,file_name):
+
+	prevchapfind=re.compile(r'href=.*?>(<\D>)?Last\sChapter<')      #finds the a href tags with previous chapter link
+	nextchapfind=re.compile(r'href=.*?>(<\D>)?Next\sChapter<')
+	bodyfind=re.compile(r'<body\s.*?>')
+
+	try:
+		prevfilename=((namedict[dict_key][0]).split('/'))[1]     #namedict[dict_key][0] contains the previous chapter path "temp_files/xxx.html". we seperate the folder and filename and store the filename 
+	except IndexError:
+		prevfilename="NothingHere"
+
+	try:
+		nextfilename=((namedict[dict_key][1]).split('/'))[1]     #namedict[dict_key][1] contains the next chapter path "temp_files/xxx.html". we seperate the folder and filename and store the filename 
+	except IndexError:
+		nextfilename="NothingHere"
+
+
+	new_file_path='pages/{}'.format(file_name)
+	
+	with open(new_file_path,'w+',encoding='utf-8') as new_file:
+		for line in tmp_file:
+			chklinenext=nextchapfind.search(line)
+			chklineprev=prevchapfind.search(line)
+			chklinebody=bodyfind.search(line)
+
+			if chklinenext and chklineprev:	
+				a='<p><a href={}>Last Chapter</a>                    <a href={}>Next Chapter</a></p>'.format(prevfilename,nextfilename)
+
+			elif chklinenext:
+				a='<p> <a href={}>Next Chapter</a></p>'.format(nextfilename)       #the first 3 if-elifs is used to look for the line in html for the next and previous chapter links 
+                                                                                   #a new line is written to point to the locally saved chapter pages
+			elif chklineprev:
+				a='<p> <a href={}>Last Chapter</a></p>'.format(prevfilename)
+
+			elif chklinebody:
+				a=line+'<font face="Calibri">'			#appends the font tag to the body tag to change the font in basic html
+
+			else:
+				a=line
+
+			new_file.write(a)
+	
+	
+
+
+
+#to find and replace hyperlinks at the "previous chapter" and "next chapter" positions
+def linkReplace():											
+	for file_path in namelist:
+		with open(file_path,'r+',encoding='utf-8') as tmpfile1:
+			file_name=(file_path.split('/'))[1]
+			findAndReplace(tmpfile1,file_path,file_name)
+		os.remove(file_path)								#deletes the corresponding file from temp_files after creating a new file with changed links in pages dir
+
+
+
+
+
+
+	
+def addToDict(file_path):
+	listlen=len(namelist)
+	if listlen==0:
+		namedict[file_path]=['','']
+		namelist.append(file_path)
+		return
+	else:
+		prev_in_list=namelist[listlen-1]
+		namedict[prev_in_list][1]=file_path
+		namedict[file_path]=[prev_in_list,'']
+		namelist.append(file_path)
+	
+	
+	
+
+
+
+
+	
+#function to save the page with the extracted name, given by the extracted link 
+def pageSave(page_link,page_name):
+	file_path="temp_files/{}.html".format(page_name)              
+	with urllib.request.urlopen(page_link) as page_object:
+		with open(file_path,'wb+') as file1:
+			file1.write(page_object.read())
+			print('Downloaded: {} into temp_files'.format(page_name))
+			addToDict(file_path)
+
+
+
+
+#creates a new table of contents file in pages dir. replaces each link in the original table of contents file with local file links			
+def tableOfContentsReplace(page_name,line):
+	with open('pages/tableofcontents.html','a+',encoding='utf-8') as file1:
+		if page_name!=None:
+			line=re.sub(r'href=.*?>','href="{}.html">'.format(page_name),line)
+
+		file1.write(line)
+			
+
+
+
+
+def charRemoval(name1):
+		name1=name1.replace(" ","")							#removing some chars because because I'm using the name1(the chapter title) to create the local file link. links do other stuff with those chars that mess with the file link
+		name1=name1.replace("#","")
+		name1=name1.replace(";","")
+		name1=name1.replace(":","")
+		name1=name1.replace(",","")
+		return name1
+
+
+
+
    
 
 #function to extract link and name from the line
@@ -58,6 +176,8 @@ def linkExtract(file_line):
 
 
 
+
+
 	
 #function to parse each line in the original table of contents html file and call the linkExtract()
 
@@ -67,129 +187,15 @@ def fileParse(link_file):
 		try:													#because of the possibility of an AttributeError from linkExtract, we get a None returned 
 			link1,name1=linkExtract(i)							#this leads to a TypeError, which we try-exceptionise and go to next iteration i.e. search the next line of the html file
 			name1=charRemoval(name1)							#removes chars from the name that done play well in a URL
-			tableOfContentsReplace(name1,i)						#
+			tableOfContentsReplace(name1,i)						
 		except TypeError:
 			tableOfContentsReplace(None,i)									
 			continue
-		
 
 		pageSave(link1,name1)                            	#passes link and name to pageSave function
 
 
 
-def charRemoval(name1):
-		name1=name1.replace(" ","")							#removing some chars because because I'm using the name1(the chapter title) to create the local file link. links do other stuff with those chars that mess with the file link
-		name1=name1.replace("#","")
-		name1=name1.replace(";","")
-		name1=name1.replace(":","")
-		name1=name1.replace(",","")
-		return name1
-
-
-#creates a new table of contents file in pages dir. replaces each link in the original table of contents file with local file links			
-def tableOfContentsReplace(page_name,line):
-	with open('pages/tableofcontents.html','a+',encoding='utf-8') as file1:
-		if page_name!=None:
-			line=re.sub(r'href=.*?>','href={}.html>'.format(page_name),line)
-
-		file1.write(line)
-			
-
-
-
-
-
-#to find and replace hyperlinks at the "previous chapter" and "next chapter" positions
-def linkReplace():											
-	for file_path in namelist:
-		with open(file_path,'r+',encoding='utf-8') as tmpfile1:
-			file_name=(file_path.split('/'))[1]
-			findAndReplace(tmpfile1,file_path,file_name)
-		os.remove(file_path)								#deletes the corresponding file from temp_files after creating a new file with changed links in pages dir
-
-
-
-
-
-
-		
-def findAndReplace(tmp_file,dict_key,file_name):
-
-	prevchapfind=re.compile(r'href=.*?>(<\D>)?Last\sChapter<')      #finds the a href tags with previous chapter link
-	nextchapfind=re.compile(r'href=.*?>(<\D>)?Next\sChapter<')
-	bodyfind=re.compile(r'<body\s.*?>')
-
-	try:
-		prevfilename=((namedict[dict_key][0]).split('/'))[1]     #namedict[dict_key][1] contains the previous chapter path "temp_files/xxx.html". we seperate the folder and filename and store the filename 
-	except IndexError:
-		prevfilename="NothingHere"
-
-	try:
-		nextfilename=((namedict[dict_key][1]).split('/'))[1]     #namedict[dict_key][1] contains the next chapter path "temp_files/xxx.html". we seperate the folder and filename and store the filename 
-	except IndexError:
-		nextfilename="NothingHere"
-
-
-	new_file_path='pages/{}'.format(file_name)
-	
-	with open(new_file_path,'w+',encoding='utf-8') as new_file:
-		for line in tmp_file:
-			chklinenext=nextchapfind.search(line)
-			chklineprev=prevchapfind.search(line)
-			chklinebody=bodyfind.search(line)
-
-			if chklinenext and chklineprev:	
-				a='<p><a href={}>Last Chapter</a>                    <a href={}>Next Chapter</a></p>'.format(prevfilename,nextfilename)
-
-			elif chklinenext:
-				a='<p> <a href={}>Next Chapter</a></p>'.format(nextfilename)
-
-			elif chklineprev:
-				a='<p> <a href={}>Last Chapter</a></p>'.format(prevfilename)
-
-			elif chklinebody:
-				a=line+'<font face="Calibri">'			#appends the font tag to the body tag to change the font in basic html
-
-			else:
-				a=line
-
-			new_file.write(a)
-	
-	
-
-
-
-
-	
-def addToDict(file_path):
-	listlen=len(namelist)
-	if listlen==0:
-		namedict[file_path]=['','']
-		namelist.append(file_path)
-		return
-	else:
-		prev_in_list=namelist[listlen-1]
-		namedict[prev_in_list][1]=file_path
-		namedict[file_path]=[prev_in_list,'']
-		namelist.append(file_path)
-	
-	
-	
-
-
-
-
-	
-#function to save the page with the extracted name, given by the extracted link 
-def pageSave(page_link,page_name):
-	file_path="temp_files/{}.html".format(page_name)              
-	with urllib.request.urlopen(page_link) as page_object:
-		with open(file_path,'wb+') as file1:
-			file1.write(page_object.read())
-			print('Downloaded: {} into temp_files'.format(page_name))
-			addToDict(file_path)
-			#print(namelist)
-		
 
 
 #deletes the old tableofcontents.html file if it exists. Because the TOC is opened in append later on and repeated usage of this script will lengthen it, not start over
@@ -213,6 +219,8 @@ def createFolders():
 
 
 #Execution starts here
+#each function called below (and inside other functions) can be found,in order, from bottom to top
+
 createFolders()
 delOldTOC()
 
