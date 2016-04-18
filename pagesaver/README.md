@@ -8,7 +8,7 @@ Will also change the hyperlinks at the "Last Chapter" and "Next Chapter" in each
 
 Also creates a new tableofcontents.html with local links to all the chapters downloaded in the directory 'pages'.
 
-This will also work for other web serials which have a similar table of contents page as Worm has.
+This will also work for other web serials which have a similar table of contents page as Worm has (provided you have saved the required table of contents html file in the same directory).
 
 Only requires python 3.x. No other dependencies.
 
