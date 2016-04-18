@@ -18,7 +18,7 @@ This scraper (crawler? saver?) is not endorsed by the original author in anyway.
 
 
 
-To run the program:
+##Running the program
 
 1. cd to the directory the program is saved in
 2. Run 'python pagesaver.py'
