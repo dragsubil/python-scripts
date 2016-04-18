@@ -1,3 +1,2 @@
 *object orient it. put classes and stuff.
 
-*add more comments. Improve readability.
