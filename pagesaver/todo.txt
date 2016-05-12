@@ -1,2 +1,0 @@
-*object orient it. put classes and stuff.
-
