@@ -20,13 +20,11 @@ import os				#for deleting the temp files and creating the directories
 
 namelist=[]  #holds the list of file links as a list of 'temp_files/xxx.html' which are used when link replacement is done. These file names are obtained from the original table of contents file.
 
-namedict={}  #holds the file links as 'temp_files/xxx.html' along with the corresponding prev chapter and next chapter file links whose names are obtained from the original table of contents file
+#holds the file links as 'temp_files/xxx.html' along with the corresponding prev chapter and next chapter file links whose names are obtained from the original table of contents file
+namedict={} 
 
 
-
-
-		
-def findAndReplace(tmp_file,dict_key,file_name):
+def findAndReplace(tmp_file, dict_key, file_name):
 
 	prevchapfind=re.compile(r'href=.*?>(<\D>)?Last\sChapter<')      #finds the a href tags with previous chapter link
 	nextchapfind=re.compile(r'href=.*?>(<\D>)?Next\sChapter<')
