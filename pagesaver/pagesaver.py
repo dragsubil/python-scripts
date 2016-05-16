@@ -50,7 +50,7 @@ def findAndReplace(tmp_file, dict_key, file_name):
 			chklinebody=bodyfind.search(line)
 
 			if chklinenext and chklineprev:	
-				a='<p><a href={}>Last Chapter</a>                    <a href={}>Next Chapter</a></p>'.format(prevfilename,nextfilename)
+				a='<p><a href={}>Last Chapter</a>\t\t\t<a href={}>Next Chapter</a></p>'.format(prevfilename,nextfilename)
 
 			elif chklinenext:
 				a='<p> <a href={}>Next Chapter</a></p>'.format(nextfilename)       #the first 3 if-elifs is used to look for the line in html for the next and previous chapter links 

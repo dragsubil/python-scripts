@@ -1,8 +1,14 @@
+# Selects and copies a random wallpaper from your wallpaper directory
+# to your current directory.
+# You must first set an environment variable pointing to your wallpaper directory
+# and name it 'WALLPAPER'
+
+
 import os
 import random
 from shutil import copy2
 
-file_dir = str(input("Enter the wallpaper directory path: "))
+file_dir = os.environ.get('WALLPAPER')
 
 dirlist = os.listdir(file_dir)
 rand_file = random.randrange(len(dirlist))
