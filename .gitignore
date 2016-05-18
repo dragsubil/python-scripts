@@ -9,6 +9,8 @@ pagesaver/table_files
 shortcuts
 
 randwallpaperselect/background*
+randwallpaperselect/Thumbs.db
+
 
 randbookselect/*.epub
 randbookselect/*.mobi
