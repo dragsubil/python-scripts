@@ -12,7 +12,7 @@
 
 
 
-import re  				#for regular expressions
+import re		#for regular expressions
 import urllib.request   #for page downloading facility
 import os				#for deleting the temp files and creating the directories
 
@@ -21,7 +21,7 @@ import os				#for deleting the temp files and creating the directories
 namelist=[]  #holds the list of file links as a list of 'temp_files/xxx.html' which are used when link replacement is done. These file names are obtained from the original table of contents file.
 
 #holds the file links as 'temp_files/xxx.html' along with the corresponding prev chapter and next chapter file links whose names are obtained from the original table of contents file
-namedict={} 
+namedict={}
 
 
 def findAndReplace(tmp_file, dict_key, file_name):
@@ -42,14 +42,14 @@ def findAndReplace(tmp_file, dict_key, file_name):
 
 
 	new_file_path='pages/{}'.format(file_name)
-	
+
 	with open(new_file_path,'w+',encoding='utf-8') as new_file:
 		for line in tmp_file:
 			chklinenext=nextchapfind.search(line)
 			chklineprev=prevchapfind.search(line)
 			chklinebody=bodyfind.search(line)
 
-			if chklinenext and chklineprev:	
+			if chklinenext and chklineprev:
 				a='<p><a href={}>Last Chapter</a>\t\t\t<a href={}>Next Chapter</a></p>'.format(prevfilename,nextfilename)
 
 			elif chklinenext:
@@ -65,13 +65,13 @@ def findAndReplace(tmp_file, dict_key, file_name):
 				a=line
 
 			new_file.write(a)
-	
-	
+
+
 
 
 
 #to find and replace hyperlinks at the "previous chapter" and "next chapter" positions
-def linkReplace():											
+def linkReplace():
 	for file_path in namelist:
 		with open(file_path,'r+',encoding='utf-8') as tmpfile1:
 			file_name=(file_path.split('/'))[1]
@@ -83,7 +83,7 @@ def linkReplace():
 
 
 
-	
+
 def addToDict(file_path):
 	listlen=len(namelist)
 	if listlen==0:
@@ -95,17 +95,17 @@ def addToDict(file_path):
 		namedict[prev_in_list][1]=file_path
 		namedict[file_path]=[prev_in_list,'']
 		namelist.append(file_path)
-	
-	
-	
 
 
 
 
-	
+
+
+
+
 #function to save the page with the extracted name, given by the extracted link 
 def pageSave(page_link,page_name):
-	file_path="temp_files/{}.html".format(page_name)              
+	file_path="temp_files/{}.html".format(page_name)
 	with urllib.request.urlopen(page_link) as page_object:
 		with open(file_path,'wb+') as file1:
 			file1.write(page_object.read())
@@ -122,13 +122,13 @@ def tableOfContentsReplace(page_name,line):
 			line=re.sub(r'href=.*?>','href="{}.html">'.format(page_name),line)
 
 		file1.write(line)
-			
+
 
 
 
 
 def charRemoval(name1):
-		name1=name1.replace(" ","")							#removing some chars because because I'm using the name1(the chapter title) to create the local file link. links do other stuff with those chars that mess with the file link
+		name1=name1.replace(" ","")	#removing some chars because because I'm using the name1(the chapter title) to create the local file link. links do other stuff with those chars that mess with the file link
 		name1=name1.replace("#","")
 		name1=name1.replace(";","")
 		name1=name1.replace(":","")
@@ -138,7 +138,7 @@ def charRemoval(name1):
 
 
 
-   
+ 
 
 #function to extract link and name from the line
 def linkExtract(file_line):
@@ -161,11 +161,11 @@ def linkExtract(file_line):
 
 	except AttributeError:										#in case of a line with none of the properties in regex, None is obtained in pattern.search
 		return													#this raises AttributeError, so we must got to the next line in file, hence return a None
-		
+
 
 	link1=link_and_file_tup[0]
 	name1=link_and_file_tup[2]									#name is actually the third element, second being a potential inbetween tag
-	link1=link1[1:-1]						   				 	#removes the unwanted quotes from the ends of the link we got 
+	link1=link1[1:-1]	                                        #removes the unwanted quotes from the ends of the link we got 
 	return (link1,name1)
 
 
@@ -176,21 +176,21 @@ def linkExtract(file_line):
 
 
 
-	
+
 #function to parse each line in the original table of contents html file and call the linkExtract()
 
 def fileParse(link_file):
 
-	for i in link_file:	
+	for i in link_file:
 		try:													#because of the possibility of an AttributeError from linkExtract, we get a None returned 
 			link1,name1=linkExtract(i)							#this leads to a TypeError, which we try-exceptionise and go to next iteration i.e. search the next line of the html file
 			name1=charRemoval(name1)							#removes chars from the name that done play well in a URL
-			tableOfContentsReplace(name1,i)						
+			tableOfContentsReplace(name1,i)
 		except TypeError:
-			tableOfContentsReplace(None,i)									
+			tableOfContentsReplace(None,i)
 			continue
 
-		pageSave(link1,name1)                            	#passes link and name to pageSave function
+		pageSave(link1,name1)             	#passes link and name to pageSave function
 
 
 

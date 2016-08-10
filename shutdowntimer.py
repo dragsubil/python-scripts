@@ -1,4 +1,4 @@
-#!/usr/bin/python3
+#!/usr/bin/env python3
 
 # use python 3.x
 # simple shutdown timer script for windows
