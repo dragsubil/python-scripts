@@ -1,9 +1,0 @@
-Filesystem      Size  Used Avail Use% Mounted on
-udev            1.4G     0  1.4G   0% /dev
-tmpfs           285M  5.0M  280M   2% /run
-/dev/sda6       327G   27G  284G   9% /
-tmpfs           1.4G  1.7M  1.4G   1% /dev/shm
-tmpfs           5.0M  4.0K  5.0M   1% /run/lock
-tmpfs           1.4G     0  1.4G   0% /sys/fs/cgroup
-tmpfs           285M   68K  285M   1% /run/user/1000
-/dev/sdb1       3.8G  1.4G  2.4G  38% /media/subil/UUI
