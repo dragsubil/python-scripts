@@ -1,4 +1,4 @@
-# Copies a rndom book from your book folder into your current folder
+# Copies a random book from your book folder into your current folder
 
 
 
