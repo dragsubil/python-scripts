@@ -3,6 +3,7 @@
 
 import subprocess
 import re
+import os
 
 def printDfWithBar(column_titles,line,percent):
     progress_complete = '#'*(percent//5)
@@ -26,4 +27,5 @@ for line in df_output_file:
        percent = int(separated_fields[-2][0:-1])
        printDfWithBar(column_titles,line,percent)
 
+df_output_file.close()
 os.remove("tmpfile")
