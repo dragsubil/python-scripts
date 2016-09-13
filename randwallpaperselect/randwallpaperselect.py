@@ -26,8 +26,7 @@ if sys.platform == 'linux':
 
 
 else:
-    # For other platforms. If you do not have Gnome or Unity, comment out the lines from 'if' to 'else'
-    # and remove the starting whitespace from the lines below 
-    file_extension = dirlist[rand_file].split('.')[1]
+    # In case you don't have Unity or Gnome shell
+    file_extension = dirlist[rand_file].split('.')[-1]
     new_file = 'background.{}'.format(file_extension)
     copy2(file_path, new_file)
